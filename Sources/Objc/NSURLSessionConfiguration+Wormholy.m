@@ -35,15 +35,16 @@ static NSURLSessionConfiguration* Wormholy_ephemeralSessionConfiguration(id self
 }
 
 __attribute__((constructor)) static void sessionConfigurationInjectEntry(void) {
-    
-    orig_defaultSessionConfiguration = (SessionConfigConstructor)WormholyReplaceMethod(@selector(defaultSessionConfiguration),
-                                                                                       (IMP)Wormholy_defaultSessionConfiguration,
-                                                                                       [NSURLSessionConfiguration class],
-                                                                                       YES);
-    
-    orig_ephemeralSessionConfiguration = (SessionConfigConstructor)WormholyReplaceMethod(@selector(ephemeralSessionConfiguration),
-                                                                                         (IMP)Wormholy_ephemeralSessionConfiguration,
-                                                                                         [NSURLSessionConfiguration class],
-                                                                                         YES);
+    Wormholy.performSwizzling = ^{
+        orig_defaultSessionConfiguration = (SessionConfigConstructor)WormholyReplaceMethod(@selector(defaultSessionConfiguration),
+                                                                                           (IMP)Wormholy_defaultSessionConfiguration,
+                                                                                           [NSURLSessionConfiguration class],
+                                                                                           YES);
+
+        orig_ephemeralSessionConfiguration = (SessionConfigConstructor)WormholyReplaceMethod(@selector(ephemeralSessionConfiguration),
+                                                                                             (IMP)Wormholy_ephemeralSessionConfiguration,
+                                                                                             [NSURLSessionConfiguration class],
+                                                                                             YES);
+    };
 }
 
