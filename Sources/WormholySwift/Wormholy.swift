@@ -11,6 +11,14 @@ import UIKit
 
 public class Wormholy: NSObject
 {
+    @objc public static var performSwizzling: (() -> Void)?
+
+    public static func start() {
+        swiftyLoad()
+        swiftyInitialize()
+        performSwizzling?()
+    }
+
     @available(*, deprecated, renamed: "ignoredHosts")
     @objc public static var blacklistedHosts: [String] {
         get { return CustomHTTPProtocol.ignoredHosts }
@@ -125,18 +133,5 @@ public class Wormholy: NSObject
         }
         
         return true
-    }()
-}
-
-/// WormholyConstructor calls this to initialize library
-extension Wormholy {
-    
-    @objc static func applicationDidFinishLaunching() {
-        initializeAction
-    }
-    
-    private static let initializeAction: Void = {
-        swiftyLoad()
-        swiftyInitialize()
     }()
 }
